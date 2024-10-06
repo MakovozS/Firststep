@@ -1,3 +1,5 @@
 import chalk from 'chalk';
 
-console.log(chalk.blue('Hello !'));
+const log = console.log;
+
+log(chalk.greenBright('Task') + ' 3' );
