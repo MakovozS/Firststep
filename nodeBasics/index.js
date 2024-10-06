@@ -1,3 +1,4 @@
 import chalk from 'chalk';
 
-console.log(chalk.blue('Hello !'));
+const log = console.log;
+log(chalk.red('Task', chalk.underline.bgBlue('3') + '!'))
