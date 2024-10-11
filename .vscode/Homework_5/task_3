@@ -1,0 +1,10 @@
+const number = 6
+
+for (let i = 1; i <= 10; i++) {console.log (`${i} * ${number} = ${number*i}`)}
+
+
+const number1 = 9
+let a = 1
+while (a <= 10) {console.log(`${a} * ${number1} = ${number1*a}`);
+a++
+}
