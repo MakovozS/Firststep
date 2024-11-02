@@ -36,4 +36,4 @@ export const eBookGetSet3 = new eBookGetSet("Full Stack Testing", "Gayathri Moha
 
 eBookGetSet1.printInfo();
 eBookGetSet2.printInfo();
-eBookGetSet3.printInfo()
+eBookGetSet3.printInfo();

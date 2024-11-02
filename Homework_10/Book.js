@@ -18,4 +18,4 @@ const book3 = new Book ("Full Stack Testing", "Gayathri Mohan", 2022);
 
 book1.printInfo();
 book2.printInfo();
-book3.printInfo();
+book3.printInfo()

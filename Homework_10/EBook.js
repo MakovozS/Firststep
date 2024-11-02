@@ -17,4 +17,4 @@ const ebook3 = new eBook ("Full Stack Testing", "Gayathri Mohan", 2022, "epub");
 
 ebook1.printInfo();
 ebook2.printInfo();
-ebook3.printInfo();
+ebook3.printInfo()

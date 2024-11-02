@@ -35,4 +35,4 @@ oldestBook.printInfo();
 
 const ebookFromBook = eBookGetSet.fromBookGetSet(oldestBook, "fb2");
 console.log("Створена Електронна книга:");
-ebookFromBook.printInfo()
+ebookFromBook.printInfo();
