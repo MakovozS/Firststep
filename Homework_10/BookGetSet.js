@@ -65,4 +65,4 @@ export const book4 = new BookGetSet("Full Stack Testing", "Gayathri Mohan", 2022
 book1.printInfo();
 book2.printInfo();
 book3.printInfo();
-book4.printInfo();
+book4.printInfo()
