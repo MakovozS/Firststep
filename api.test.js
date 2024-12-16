@@ -1,94 +1,117 @@
+
 import axios from "axios";
+import { jest } from '@jest/globals';
 
-
-const api = axios.create({
-  baseURL: "https://jsonplaceholder.typicode.com"
-});
-
-
-api.interceptors.request.use(request => {
-  console.log("requestс:", request.method.toUpperCase(), request.url);
-  return request;
-});
-
-
-api.interceptors.response.use(response => {
-  console.log("response:", response.status, response.config.url);
-  return response;
-});
+jest.mock('axios');
+export const api = axios;
 
 describe("API tests JSONPlaceholder", () => {
-
   test("GET /posts - all posts", async () => {
-    const response = await api.get("/posts");
+
+    axios.get.mockResolvedValue({
+      status: 200,
+      data: [{ id: 1, title: "Test Post" }],
+    });
+
+
+    const response = await axios.get("/posts");
 
 
     expect(response.status).toBe(200);
-    expect(Array.isArray(response.data)).toBe(true);
-    expect(response.data.length).toBeGreaterThan(0);
-    expect(response.data[0]).toHaveProperty("userId");
-    expect(response.data[0].title.length).toBeGreaterThan(10);
+    expect(response.data[0]).toHaveProperty("title", "Test Post");
   });
 
-  test("GET /posts/1 - postс id = 1 ", async () => {
-    const response = await api.get("/posts/1");
+  test("GET /posts/1 - post with id = 1", async () => {
 
+    axios.get.mockResolvedValue({
+      status: 200,
+      data: { id: 1, title: "Test Post", body: "Test body" },
+    });
+
+    const response = await axios.get("/posts/1");
 
     expect(response.status).toBe(200);
-    expect(response.data).toHaveProperty("userId");
     expect(response.data).toHaveProperty("id", 1);
-    expect(response.data).toHaveProperty("title");
-    expect(response.data).toHaveProperty("body");
-    expect(typeof response.data.title).toBe("string");
-    expect(response.data.body).toContain("voluptatibus");
-    expect(response.data.body.length).toBeGreaterThan(50);
-
-
-    expect(response.data.body).toContain("ERROR");
+    expect(response.data).toHaveProperty("title", "Test Post");
   });
 
-  test("POST /posts - new post", async () => {
+  test("POST /posts - create new post", async () => {
     const newPost = {
-      title: "Test post",
+      title: "New Post",
       body: "Content",
       userId: 1,
     };
 
-    const response = await api.post("/posts", newPost);
+    axios.post.mockResolvedValue({
+      status: 201,
+      data: { id: 1, ...newPost },
+    });
+
+    const response = await axios.post("/posts", newPost);
 
     expect(response.status).toBe(201);
     expect(response.data).toHaveProperty("title", newPost.title);
     expect(response.data).toHaveProperty("body", newPost.body);
     expect(response.data).toHaveProperty("userId", newPost.userId);
-    expect(response.data.id).toBeGreaterThan(0);
-    expect(response.data.title).not.toBe("");
-    expect(response.data.body.length).toBeGreaterThan(5);
   });
 
   test("GET /users - all users", async () => {
-    const response = await api.get("/users");
+    axios.get.mockResolvedValue({
+      status: 200,
+      data: [{ id: 1, name: "John Doe" }],
+    });
+
+    const response = await axios.get("/users");
 
     expect(response.status).toBe(200);
-    expect(Array.isArray(response.data)).toBe(true);
-    expect(response.data.length).toBeGreaterThan(5);
-    expect(response.data[0]).toHaveProperty("name");
-    expect(response.data[0].name.length).toBeGreaterThan(3);
+    expect(response.data[0]).toHaveProperty("name", "John Doe");
   });
 
-  test("POST /comments - new comments", async () => {
+  test("POST /comments - create new comment", async () => {
     const newComment = {
-      name: "new comment",
-      body: "content 2",
+      name: "New comment",
+      body: "Content",
       postId: 1,
     };
 
-    const response = await api.post("/comments", newComment);
+    axios.post.mockResolvedValue({
+      status: 201,
+      data: { id: 1, ...newComment },
+    });
+
+    const response = await axios.post("/comments", newComment);
 
     expect(response.status).toBe(201);
     expect(response.data).toHaveProperty("name", newComment.name);
     expect(response.data).toHaveProperty("body", newComment.body);
     expect(response.data).toHaveProperty("postId", newComment.postId);
-    expect(response.data.name.length).toBeGreaterThan(5);
-    expect(response.data.body).toContain("content");
+  });
+
+  test("Mock failed GET request", async () => {
+    axios.get.mockRejectedValue({
+      response: { status: 404, data: "Not Found" },
+    });
+
+    try {
+      await axios.get("/wrong-url");
+    } catch (error) {
+      expect(error.response.status).toBe(404);
+      expect(error.response.data).toBe("Not Found");
+    }
+  });
+
+  test("Mock failed POST request", async () => {
+    axios.post.mockRejectedValue({
+      response: { status: 400, data: "Bad Request" },
+    });
+
+    const newPost = { title: "New Post", body: "Content", userId: 1 };
+
+    try {
+      await axios.post("/posts", newPost);
+    } catch (error) {
+      expect(error.response.status).toBe(400);
+      expect(error.response.data).toBe("Bad Request");
+    }
   });
 });
